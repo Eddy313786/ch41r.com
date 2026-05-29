@@ -170,7 +170,7 @@
 </main>
 
 <script>
-const € = (v, dec=2) => '€ ' + (parseFloat(v)||0).toLocaleString('nl-BE',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+const eur = (v, dec=2) => '€ ' + (parseFloat(v)||0).toLocaleString('nl-BE',{minimumFractionDigits:dec,maximumFractionDigits:dec});
 const pct = v => ((parseFloat(v)||0).toFixed(1)) + '%';
 const n = v => Math.round(parseFloat(v)||0).toLocaleString('nl-BE');
 const sign = v => v >= 0 ? `<span class="pos">+${eur(v)}</span>` : `<span class="neg">${eur(v)}</span>`;
