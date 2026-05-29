@@ -17,7 +17,7 @@
   .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     width: 280px;
     gap: 24px;
   }
@@ -26,13 +26,27 @@
     font-size: 15px;
     color: #aaa;
     letter-spacing: 2px;
+    text-align: center;
   }
+  button {
+    padding: 12px;
+    background: #fff;
+    color: #1a1a1a;
+    border: 1.5px solid #1a1a1a;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.15s, color 0.15s;
+  }
+  button:hover { background: #1a1a1a; color: #fff; }
 </style>
 </head>
 <body>
   <div class="container">
     <img src="Logo.png" alt="CH41R"/>
     <p>welcome</p>
+    <button onclick="window.location.href='/'">log out</button>
   </div>
 </body>
 </html>
