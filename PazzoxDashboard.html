@@ -428,12 +428,17 @@ function sortTable(col) {
 }
 
 fetch('/api/verify')
-  .then(r => r.ok ? r.json() : Promise.reject())
+  .then(r => {
+    if (!r.ok) { window.location.replace('/'); return null; }
+    return r.json();
+  })
   .then(data => {
+    if (!data) return;
     const name = data.username || '';
     document.getElementById('username').textContent = name;
-    document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
-  }).catch(() => window.location.replace('/'));
+    if (name) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
+  })
+  .catch(() => {});
 
 function logout() {
   document.cookie = 'ch41r_session=; Path=/; Max-Age=0';

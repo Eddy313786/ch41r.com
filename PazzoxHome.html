@@ -96,11 +96,15 @@
 
 <script>
   fetch('/api/verify')
-    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(r => {
+      if (!r.ok) { window.location.replace('/'); return null; }
+      return r.json();
+    })
     .then(data => {
+      if (!data) return;
       const name = data.username || '';
       document.getElementById('username').textContent = name;
-      document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
+      if (name) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
       document.body.classList.remove('hidden');
     })
     .catch(() => window.location.replace('/'));
