@@ -10,15 +10,26 @@ module.exports = async function handler(req, res) {
   try { jwt.verify(match[1], process.env.JWT_SECRET); }
   catch { return res.status(401).json({ error: 'Invalid session' }); }
 
-  const { date_from, date_to, fpt_source, domein } = req.query;
+  const params = {
+    p_date_from: req.query.date_from || null,
+    p_date_to:   req.query.date_to   || null,
+    p_source:    (req.query.fpt_source && req.query.fpt_source !== 'all') ? req.query.fpt_source : null,
+    p_domein:    (req.query.domein     && req.query.domein     !== 'all') ? req.query.domein     : null,
+  };
 
-  const { data, error } = await supabase.rpc('get_dashboard_data', {
-    p_date_from: date_from || null,
-    p_date_to:   date_to   || null,
-    p_source:    (fpt_source && fpt_source !== 'all') ? fpt_source : null,
-    p_domein:    (domein     && domein     !== 'all') ? domein     : null,
+  const [main, daily, sources] = await Promise.all([
+    supabase.rpc('get_dashboard_data', params),
+    supabase.rpc('get_daily',   params),
+    supabase.rpc('get_sources', params),
+  ]);
+
+  if (main.error)    return res.status(500).json({ error: main.error.message });
+  if (daily.error)   return res.status(500).json({ error: daily.error.message });
+  if (sources.error) return res.status(500).json({ error: sources.error.message });
+
+  res.status(200).json({
+    ...main.data,
+    daily:   daily.data   || [],
+    sources: sources.data || [],
   });
-
-  if (error) return res.status(500).json({ error: error.message });
-  res.status(200).json(data);
 };
