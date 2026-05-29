@@ -195,11 +195,11 @@ async function load() {
 
   // Populate filters on first load
   if (document.getElementById('f_source').options.length === 1) {
-    d.filter_options.sources.forEach(s => {
+    (d.filter_options?.sources || []).forEach(s => {
       const o = document.createElement('option'); o.value = s; o.text = s;
       document.getElementById('f_source').appendChild(o);
     });
-    d.filter_options.domeinen.forEach(s => {
+    (d.filter_options?.domeinen || []).forEach(s => {
       const o = document.createElement('option'); o.value = s; o.text = s.toUpperCase();
       document.getElementById('f_domein').appendChild(o);
     });
@@ -280,6 +280,7 @@ function render(d) {
             <div class="kpi-label">Nieuwe klanten</div>
             <div class="kpi-value" style="font-size:20px">${n(k.new_orders)}</div>
             <div class="kpi-sub">${eur(k.new_avg_profit)} profit/order</div>
+            <div class="kpi-badge badge-blue">${pct(100 - k.pct_existing)} nieuw</div>
           </div>
           <div class="split-kpi">
             <div class="kpi-label">Bestaande klanten</div>
@@ -296,6 +297,7 @@ function render(d) {
             <div class="kpi-label">België</div>
             <div class="kpi-value" style="font-size:20px">${n(k.be_orders)}</div>
             <div class="kpi-sub">${eur(k.be_avg_profit)} profit/order</div>
+            <div class="kpi-badge badge-blue">${pct(k.be_pct)} van totaal</div>
           </div>
           <div class="split-kpi">
             <div class="kpi-label">Nederland</div>
@@ -348,7 +350,8 @@ function render(d) {
   `;
 
   // Charts
-  const labels = d.daily.map(r => r.date.slice(5)); // MM-DD
+  const daily = d.daily || [];
+  const labels = daily.map(r => r.date.slice(5)); // MM-DD
   const chartOpts = {
     responsive: true, maintainAspectRatio: true,
     interaction: { mode: 'index', intersect: false },
@@ -364,8 +367,8 @@ function render(d) {
     data: {
       labels,
       datasets: [
-        { label: 'BE', data: d.daily.map(r => r.be_margin?.toFixed(1)), borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,.08)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
-        { label: 'NL', data: d.daily.map(r => r.nl_margin?.toFixed(1)), borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,.05)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
+        { label: 'BE', data: daily.map(r => r.be_margin?.toFixed(1)), borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,.08)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
+        { label: 'NL', data: daily.map(r => r.nl_margin?.toFixed(1)), borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,.05)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
       ]
     },
     options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v + '%' } } } }
@@ -376,15 +379,15 @@ function render(d) {
     data: {
       labels,
       datasets: [
-        { label: 'BE', data: d.daily.map(r => r.be_profit_order?.toFixed(2)), borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,.08)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
-        { label: 'NL', data: d.daily.map(r => r.nl_profit_order?.toFixed(2)), borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,.05)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
+        { label: 'BE', data: daily.map(r => r.be_profit_order?.toFixed(2)), borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,.08)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
+        { label: 'NL', data: daily.map(r => r.nl_profit_order?.toFixed(2)), borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,.05)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
       ]
     },
     options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => '€' + v } } } }
   });
 
   // Table
-  renderTable(d.sources);
+  renderTable(d.sources || []);
 }
 
 let tableData = [], sortCol = 1, sortDir = -1;
