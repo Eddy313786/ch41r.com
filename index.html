@@ -19,53 +19,54 @@
 
   /* ── Left ── */
   .left {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    padding: 48px 56px;
-    gap: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 48px 72px;
   }
 
   .logo-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    margin-bottom: auto;
   }
-  .logo-img { width: 30px; height: 30px; object-fit: contain; }
-  .logo-name { font-size: 18px; font-weight: 800; color: #0f172a; letter-spacing: -0.2px; }
+  .logo-img { width: 44px; height: 44px; object-fit: contain; }
+  .logo-name { font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -0.3px; }
 
-  /* Center section */
-  .center {
+  .form-area {
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 40px 0;
+    padding: 48px 0;
   }
 
   h1 {
-    font-size: 36px;
+    font-size: 40px;
     font-weight: 800;
     color: #0f172a;
-    letter-spacing: -1px;
-    margin-bottom: 8px;
+    letter-spacing: -1.2px;
+    margin-bottom: 10px;
   }
   .subtitle {
-    font-size: 15px;
+    font-size: 16px;
     color: #64748b;
-    margin-bottom: 40px;
+    margin-bottom: 44px;
   }
 
-  /* Floating label fields */
+  /* Floating label fields — max width */
   .field {
     position: relative;
     margin-bottom: 20px;
+    max-width: 380px;
   }
   .field input {
     width: 100%;
-    height: 60px;
-    padding: 24px 18px 8px;
+    height: 62px;
+    padding: 26px 18px 8px;
     border: 1.5px solid #e2e8f0;
     border-radius: 14px;
-    font-size: 15px;
+    font-size: 16px;
     font-family: inherit;
     color: #0f172a;
     background: #fff;
@@ -78,7 +79,7 @@
     left: 18px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 14px;
+    font-size: 15px;
     color: #94a3b8;
     font-weight: 500;
     pointer-events: none;
@@ -89,32 +90,50 @@
     top: 14px;
     transform: none;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     color: #0d9488;
     text-transform: uppercase;
-    letter-spacing: .4px;
+    letter-spacing: .5px;
   }
 
-  .forgot-row {
+  .remember-row {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 380px;
     margin-bottom: 32px;
   }
-  .forgot { font-size: 13px; color: #ef4444; font-weight: 600; cursor: pointer; }
+  .remember-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #475569;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .remember-label input[type=checkbox] {
+    width: 16px;
+    height: 16px;
+    accent-color: #0d9488;
+    cursor: pointer;
+  }
+  .forgot { font-size: 14px; color: #ef4444; font-weight: 600; cursor: pointer; }
   .forgot:hover { text-decoration: underline; }
 
   .btn-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     gap: 14px;
+    max-width: 380px;
   }
   .btn-login {
-    padding: 16px;
+    flex: 1;
+    padding: 17px;
     background: #0d9488;
     color: #fff;
     border: none;
     border-radius: 14px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
@@ -122,12 +141,13 @@
   }
   .btn-login:hover { background: #0f766e; }
   .btn-request {
-    padding: 16px;
+    flex: 1;
+    padding: 17px;
     background: #fff;
     color: #0f172a;
     border: 1.5px solid #e2e8f0;
     border-radius: 14px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
@@ -135,9 +155,9 @@
   }
   .btn-request:hover { border-color: #0d9488; }
 
-  .error-msg { font-size: 13px; color: #ef4444; font-weight: 500; margin-top: 12px; min-height: 18px; }
+  .error-msg { font-size: 13px; color: #ef4444; font-weight: 500; margin-top: 14px; min-height: 18px; max-width: 380px; }
 
-  .legal { font-size: 12px; color: #94a3b8; line-height: 1.6; }
+  .legal { font-size: 12px; color: #94a3b8; line-height: 1.6; margin-top: auto; max-width: 380px; }
 
   /* ── Right ── */
   .right {
@@ -155,36 +175,28 @@
     position: absolute; inset: 0; opacity: .04;
     background-image: repeating-linear-gradient(-45deg,#fff 0,#fff 1px,transparent 0,transparent 14px);
   }
-  .blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: .2;
-  }
+  .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .2; }
   .b1 { width: 500px; height: 500px; background: #14b8a6; bottom: -150px; right: -80px; }
   .b2 { width: 300px; height: 300px; background: #0d9488; top: -80px; left: -50px; }
-
   .right-content {
     position: absolute; inset: 0;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     gap: 20px; padding: 60px;
   }
-  .right-logo { width: 110px; height: 110px; object-fit: contain; opacity: .18; filter: brightness(10); }
+  .right-logo { width: 120px; height: 120px; object-fit: contain; opacity: .18; filter: brightness(10); }
   .right-title { font-size: 30px; font-weight: 800; color: #fff; text-align: center; letter-spacing: -0.5px; }
   .right-sub { font-size: 15px; color: rgba(255,255,255,.55); text-align: center; line-height: 1.7; max-width: 240px; }
 
   /* Modal */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,.35);
-    align-items: center; justify-content: center; z-index: 100;
+    background: rgba(0,0,0,.35); align-items: center; justify-content: center; z-index: 100;
     backdrop-filter: blur(6px);
   }
   .modal-overlay.active { display: flex; }
   .modal {
-    background: #fff; border-radius: 24px;
-    padding: 44px; width: 400px;
+    background: #fff; border-radius: 24px; padding: 44px; width: 400px;
     display: flex; flex-direction: column; gap: 16px;
     box-shadow: 0 32px 80px rgba(0,0,0,.2);
   }
@@ -206,7 +218,7 @@
     <span class="logo-name">CH41R</span>
   </div>
 
-  <div class="center">
+  <div class="form-area">
     <h1>Welcome back!</h1>
     <p class="subtitle">Please log in to your account.</p>
 
@@ -219,9 +231,14 @@
         <input type="password" id="password" placeholder=" " autocomplete="current-password"/>
         <label for="password">Password</label>
       </div>
-      <div class="forgot-row">
+
+      <div class="remember-row">
+        <label class="remember-label">
+          <input type="checkbox" id="remember"/> Remember me
+        </label>
         <span class="forgot">Forgot password?</span>
       </div>
+
       <div class="btn-row">
         <button type="submit" class="btn-login">Login</button>
         <button type="button" class="btn-request" id="requestBtn">Request access</button>
@@ -261,30 +278,19 @@
     const err = document.getElementById('errorMsg');
     err.textContent = '';
     const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: document.getElementById('username').value,
-        password: document.getElementById('password').value
-      })
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: document.getElementById('username').value, password: document.getElementById('password').value })
     });
     if (res.ok) { window.location.href = '/PazzoxHome'; }
     else { err.textContent = 'Incorrect username or password.'; document.getElementById('password').value = ''; }
   });
 
-  document.getElementById('requestBtn').addEventListener('click', () =>
-    document.getElementById('modalOverlay').classList.add('active'));
-  document.getElementById('modalOverlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('modalOverlay'))
-      document.getElementById('modalOverlay').classList.remove('active');
-  });
+  document.getElementById('requestBtn').addEventListener('click', () => document.getElementById('modalOverlay').classList.add('active'));
+  document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) document.getElementById('modalOverlay').classList.remove('active'); });
   document.getElementById('sendRequest').addEventListener('click', async () => {
     const email = document.getElementById('requestEmail').value;
     if (!email) return;
-    const res = await fetch('/api/request-access', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
+    const res = await fetch('/api/request-access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
     document.getElementById('modalMsg').textContent = res.ok ? "Request sent — you'll hear from us soon." : 'Something went wrong.';
     if (res.ok) document.getElementById('sendRequest').disabled = true;
   });
