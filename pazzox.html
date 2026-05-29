@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pazzox — Revenue</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f0f2f5;
+    --surface: #ffffff;
+    --border: #e8eaed;
+    --text: #1a1d23;
+    --muted: #6b7280;
+    --accent: #0ea5e9;
+    --accent2: #f97316;
+    --green: #10b981;
+    --red: #ef4444;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+  }
+
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* Header */
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .brand { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+  .brand span { color: var(--accent); }
+  .page-title { font-size: 14px; color: var(--muted); border-left: 1px solid var(--border); padding-left: 16px; }
+  .header-right { display: flex; align-items: center; gap: 8px; }
+  .back-btn { font-size: 13px; color: var(--muted); text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: background .15s; }
+  .back-btn:hover { background: var(--bg); }
+
+  /* Filters */
+  .filters { padding: 20px 32px 0; display: flex; gap: 10px; flex-wrap: wrap; }
+  select, input[type=date] {
+    height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 13px; color: var(--text); background: var(--surface); cursor: pointer;
+    outline: none; transition: border-color .15s;
+  }
+  select:focus, input[type=date]:focus { border-color: var(--accent); }
+  .filter-group { display: flex; align-items: center; gap: 6px; }
+  .filter-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .date-sep { font-size: 13px; color: var(--muted); }
+  .apply-btn {
+    height: 36px; padding: 0 16px; background: var(--accent); color: #fff;
+    border: none; border-radius: 8px; font-size: 13px; cursor: pointer;
+    font-weight: 500; transition: opacity .15s;
+  }
+  .apply-btn:hover { opacity: .85; }
+
+  /* Main grid */
+  main { padding: 20px 32px 40px; display: grid; gap: 16px; }
+
+  /* KPI row 1 */
+  .kpi-row { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+  .card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
+
+  .kpi-card { padding: 20px 24px; }
+  .kpi-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: 6px; }
+  .kpi-value { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; line-height: 1; }
+  .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .kpi-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 99px; margin-top: 6px; }
+  .badge-green { background: #dcfce7; color: #15803d; }
+  .badge-red { background: #fee2e2; color: #b91c1c; }
+  .badge-blue { background: #dbeafe; color: #1d4ed8; }
+
+  /* Big number cards */
+  .totals-card { grid-column: span 1; }
+
+  /* Section header */
+  .section-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px; }
+
+  /* Charts row */
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .chart-card { padding: 24px; }
+  .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .chart-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .chart-legend { display: flex; gap: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* Split cards row */
+  .split-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .split-card { padding: 20px 24px; }
+  .split-header { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--accent); color: var(--accent); }
+  .split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .split-kpi .kpi-label { font-size: 10px; }
+  .split-kpi .kpi-value { font-size: 20px; }
+
+  /* Totals big card */
+  .totals-big { display: flex; flex-direction: column; gap: 10px; }
+  .total-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--bg); }
+  .total-row:last-child { border-bottom: none; }
+  .total-lbl { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .total-val { font-size: 18px; font-weight: 700; color: var(--text); }
+
+  /* Table */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .table-title { font-size: 14px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: #f8f9fb; }
+  th { padding: 10px 16px; text-align: right; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); cursor: pointer; white-space: nowrap; user-select: none; }
+  th:first-child { text-align: left; }
+  th:hover { color: var(--accent); }
+  td { padding: 11px 16px; text-align: right; border-bottom: 1px solid var(--bg); color: var(--text); }
+  td:first-child { text-align: left; font-weight: 600; }
+  tr:last-child td { border-bottom: none; font-weight: 700; background: #f8f9fb; }
+  tr:hover td { background: #fafbfc; }
+  .pct-bar { display: flex; align-items: center; gap: 8px; }
+  .bar-bg { width: 60px; height: 4px; background: var(--bg); border-radius: 99px; }
+  .bar-fill { height: 4px; background: var(--accent); border-radius: 99px; }
+  .pos { color: var(--green); } .neg { color: var(--red); }
+
+  /* Loading */
+  .loading { display: flex; align-items: center; justify-content: center; min-height: 300px; }
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 900px) {
+    .charts-row { grid-template-columns: 1fr; }
+    .split-row { grid-template-columns: 1fr; }
+    main { padding: 16px; }
+    .filters { padding: 12px 16px 0; }
+    header { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="brand">Pazz<span>ox</span></div>
+    <div class="page-title">Revenue dashboard</div>
+  </div>
+  <div class="header-right">
+    <a href="/dashboard" class="back-btn">← Terug</a>
+  </div>
+</header>
+
+<div class="filters">
+  <div class="filter-group">
+    <span class="filter-label">Bron</span>
+    <select id="f_source"><option value="all">Alle bronnen</option></select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Domein</span>
+    <select id="f_domein"><option value="all">BE + NL</option></select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Van</span>
+    <input type="date" id="f_from" value="2026-04-01">
+    <span class="date-sep">–</span>
+    <input type="date" id="f_to" value="2026-04-30">
+  </div>
+  <button class="apply-btn" onclick="load()">Toepassen</button>
+</div>
+
+<main id="main">
+  <div class="loading"><div class="spinner"></div></div>
+</main>
+
+<script>
+const € = (v, dec=2) => '€ ' + (parseFloat(v)||0).toLocaleString('nl-BE',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+const pct = v => ((parseFloat(v)||0).toFixed(1)) + '%';
+const n = v => Math.round(parseFloat(v)||0).toLocaleString('nl-BE');
+const sign = v => v >= 0 ? `<span class="pos">+${€(v)}</span>` : `<span class="neg">${€(v)}</span>`;
+
+let marginChart, profitChart;
+
+async function load() {
+  const params = new URLSearchParams({
+    fpt_source: document.getElementById('f_source').value,
+    domein: document.getElementById('f_domein').value,
+    date_from: document.getElementById('f_from').value,
+    date_to: document.getElementById('f_to').value,
+  });
+
+  document.getElementById('main').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  if (marginChart) { marginChart.destroy(); marginChart = null; }
+  if (profitChart) { profitChart.destroy(); profitChart = null; }
+
+  const res = await fetch('/api/dashboard-data?' + params);
+  if (!res.ok) { window.location.href = '/'; return; }
+  const d = await res.json();
+
+  // Populate filters on first load
+  if (document.getElementById('f_source').options.length === 1) {
+    d.filter_options.sources.forEach(s => {
+      const o = document.createElement('option'); o.value = s; o.text = s;
+      document.getElementById('f_source').appendChild(o);
+    });
+    d.filter_options.domeinen.forEach(s => {
+      const o = document.createElement('option'); o.value = s; o.text = s.toUpperCase();
+      document.getElementById('f_domein').appendChild(o);
+    });
+  }
+
+  render(d);
+}
+
+function render(d) {
+  const k = d.kpis;
+  const main = document.getElementById('main');
+
+  main.innerHTML = `
+    <!-- Row 1: totals -->
+    <div class="kpi-row">
+      <div class="card kpi-card">
+        <div class="kpi-label">Orders</div>
+        <div class="kpi-value">${n(k.total_orders)}</div>
+        <div class="kpi-sub">totaal periode</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label">Gem. orderwaarde</div>
+        <div class="kpi-value">${€(k.avg_revenue)}</div>
+        <div class="kpi-sub">excl. BTW</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label">Gross margin</div>
+        <div class="kpi-value">${pct(k.gross_margin_pct)}</div>
+        <div class="kpi-sub">gem. over alle orders</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label">Gem. gross profit</div>
+        <div class="kpi-value">${€(k.avg_gross_profit)}</div>
+        <div class="kpi-sub">per order</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label">Gem. kosten</div>
+        <div class="kpi-value">${€(k.avg_cost)}</div>
+        <div class="kpi-sub">ship + mkt + voucher</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label">Gem. profit</div>
+        <div class="kpi-value" style="color:${k.avg_profit>=0?'var(--green)':'var(--red)'}">${€(k.avg_profit)}</div>
+        <div class="kpi-sub">netto per order</div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="charts-row">
+      <div class="card chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Gross margin %</div>
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#0ea5e9"></div>BE</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div>NL</div>
+          </div>
+        </div>
+        <canvas id="marginChart" height="160"></canvas>
+      </div>
+      <div class="card chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Profit / order</div>
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#0ea5e9"></div>BE</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div>NL</div>
+          </div>
+        </div>
+        <canvas id="profitChart" height="160"></canvas>
+      </div>
+    </div>
+
+    <!-- Split row: new/existing, BE/NL, totals -->
+    <div class="split-row">
+      <div class="card split-card">
+        <div class="split-header">Klanttype</div>
+        <div class="split-grid">
+          <div class="split-kpi">
+            <div class="kpi-label">Nieuwe klanten</div>
+            <div class="kpi-value" style="font-size:20px">${n(k.new_orders)}</div>
+            <div class="kpi-sub">${€(k.new_avg_profit)} profit/order</div>
+          </div>
+          <div class="split-kpi">
+            <div class="kpi-label">Bestaande klanten</div>
+            <div class="kpi-value" style="font-size:20px">${n(k.existing_orders)}</div>
+            <div class="kpi-sub">${€(k.existing_avg_profit)} profit/order</div>
+            <div class="kpi-badge badge-blue">${pct(k.pct_existing)} bestaand</div>
+          </div>
+        </div>
+      </div>
+      <div class="card split-card">
+        <div class="split-header" style="border-color: var(--accent2); color: var(--accent2)">Land</div>
+        <div class="split-grid">
+          <div class="split-kpi">
+            <div class="kpi-label">België</div>
+            <div class="kpi-value" style="font-size:20px">${n(k.be_orders)}</div>
+            <div class="kpi-sub">${€(k.be_avg_profit)} profit/order</div>
+          </div>
+          <div class="split-kpi">
+            <div class="kpi-label">Nederland</div>
+            <div class="kpi-value" style="font-size:20px">${n(k.nl_orders)}</div>
+            <div class="kpi-sub">${€(k.nl_avg_profit)} profit/order</div>
+            <div class="kpi-badge badge-blue">${pct(k.be_pct)} BE</div>
+          </div>
+        </div>
+      </div>
+      <div class="card split-card">
+        <div class="split-header" style="border-color: var(--green); color: var(--green)">Totalen</div>
+        <div class="totals-big">
+          <div class="total-row">
+            <span class="total-lbl">Omzet</span>
+            <span class="total-val">${€(k.total_revenue, 0)}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-lbl">Gross profit</span>
+            <span class="total-val">${€(k.total_gross_profit, 0)}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-lbl">Ad spend</span>
+            <span class="total-val">${€(k.total_ad_spend, 0)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Source table -->
+    <div class="card table-card">
+      <div class="table-header">
+        <div class="table-title">Per bron (FPT)</div>
+      </div>
+      <table id="srcTable">
+        <thead><tr>
+          <th onclick="sortTable(0)">Bron</th>
+          <th onclick="sortTable(1)">Orders</th>
+          <th onclick="sortTable(2)">% van totaal</th>
+          <th onclick="sortTable(3)">Omzet</th>
+          <th onclick="sortTable(4)">Gross margin</th>
+          <th onclick="sortTable(5)">Gross profit/order</th>
+          <th onclick="sortTable(6)">Mkt cost/order</th>
+          <th onclick="sortTable(7)">Ship cost/order</th>
+          <th onclick="sortTable(8)">Kosten/order</th>
+          <th onclick="sortTable(9)">Profit/order</th>
+        </tr></thead>
+        <tbody id="srcBody"></tbody>
+      </table>
+    </div>
+  `;
+
+  // Charts
+  const labels = d.daily.map(r => r.date.slice(5)); // MM-DD
+  const chartOpts = {
+    responsive: true, maintainAspectRatio: true,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1d23', titleColor: '#9ca3af', bodyColor: '#fff', padding: 10, cornerRadius: 8 } },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#9ca3af', font: { size: 11 }, maxTicksLimit: 10 } },
+      y: { grid: { color: '#f0f2f5' }, ticks: { color: '#9ca3af', font: { size: 11 } } }
+    }
+  };
+
+  marginChart = new Chart(document.getElementById('marginChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'BE', data: d.daily.map(r => r.be_margin?.toFixed(1)), borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,.08)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
+        { label: 'NL', data: d.daily.map(r => r.nl_margin?.toFixed(1)), borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,.05)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
+      ]
+    },
+    options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v + '%' } } } }
+  });
+
+  profitChart = new Chart(document.getElementById('profitChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'BE', data: d.daily.map(r => r.be_profit_order?.toFixed(2)), borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,.08)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
+        { label: 'NL', data: d.daily.map(r => r.nl_profit_order?.toFixed(2)), borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,.05)', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.4, fill: true, spanGaps: true },
+      ]
+    },
+    options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => '€' + v } } } }
+  });
+
+  // Table
+  renderTable(d.sources);
+}
+
+let tableData = [], sortCol = 1, sortDir = -1;
+function renderTable(sources) {
+  tableData = sources;
+  const totals = {
+    source: 'Totaal',
+    orders: sources.reduce((s,r)=>s+r.orders,0),
+    pct: 100,
+    revenue: sources.reduce((s,r)=>s+r.revenue,0),
+    gross_margin_pct: null,
+    gross_profit_order: null,
+    marketing_cost_order: null,
+    shipping_cost_order: null,
+    cost_order: null,
+    profit_order: null,
+  };
+  const body = document.getElementById('srcBody');
+  const rows = [...sources].sort((a,b) => sortDir * (b[Object.keys(b)[sortCol]] - a[Object.keys(a)[sortCol]]));
+  const allRows = [...rows, totals];
+  body.innerHTML = allRows.map((r, i) => {
+    const isTotaal = i === allRows.length - 1;
+    return `<tr>
+      <td>${r.source}</td>
+      <td>${n(r.orders)}</td>
+      <td><div class="pct-bar">${pct(r.pct)}<div class="bar-bg"><div class="bar-fill" style="width:${Math.min(r.pct,100)}%"></div></div></div></td>
+      <td>${r.revenue != null ? €(r.revenue,0) : '—'}</td>
+      <td>${r.gross_margin_pct != null ? pct(r.gross_margin_pct) : '—'}</td>
+      <td>${r.gross_profit_order != null ? €(r.gross_profit_order) : '—'}</td>
+      <td>${r.marketing_cost_order != null ? €(r.marketing_cost_order) : '—'}</td>
+      <td>${r.shipping_cost_order != null ? €(r.shipping_cost_order) : '—'}</td>
+      <td>${r.cost_order != null ? €(r.cost_order) : '—'}</td>
+      <td style="font-weight:600;color:${r.profit_order >= 0 ? 'var(--green)' : 'var(--red)'}">${r.profit_order != null ? €(r.profit_order) : '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function sortTable(col) {
+  sortCol = col; sortDir *= -1;
+  renderTable(tableData);
+}
+
+load();
+</script>
+</body>
+</html>
