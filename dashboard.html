@@ -40,13 +40,27 @@
     transition: background 0.15s, color 0.15s;
   }
   button:hover { background: #1a1a1a; color: #fff; }
+  body.hidden { visibility: hidden; }
 </style>
 </head>
-<body>
+<body class="hidden">
   <div class="container">
     <img src="Logo.png" alt="CH41R"/>
     <p>welcome</p>
-    <button onclick="window.location.href='/'">log out</button>
+    <button onclick="logout()">log out</button>
   </div>
+  <script>
+    fetch('/api/verify')
+      .then(r => {
+        if (!r.ok) window.location.replace('/');
+        else document.body.classList.remove('hidden');
+      })
+      .catch(() => window.location.replace('/'));
+
+    function logout() {
+      document.cookie = 'ch41r_session=; Path=/; Max-Age=0';
+      window.location.replace('/');
+    }
+  </script>
 </body>
 </html>

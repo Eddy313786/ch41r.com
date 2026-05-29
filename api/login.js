@@ -1,5 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -22,5 +23,8 @@ module.exports = async function handler(req, res) {
   const valid = await bcrypt.compare(password, user.password_hash);
   if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
 
+  const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+  res.setHeader('Set-Cookie', `ch41r_session=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`);
   res.status(200).json({ success: true });
 };
