@@ -173,7 +173,7 @@
 const € = (v, dec=2) => '€ ' + (parseFloat(v)||0).toLocaleString('nl-BE',{minimumFractionDigits:dec,maximumFractionDigits:dec});
 const pct = v => ((parseFloat(v)||0).toFixed(1)) + '%';
 const n = v => Math.round(parseFloat(v)||0).toLocaleString('nl-BE');
-const sign = v => v >= 0 ? `<span class="pos">+${€(v)}</span>` : `<span class="neg">${€(v)}</span>`;
+const sign = v => v >= 0 ? `<span class="pos">+${eur(v)}</span>` : `<span class="neg">${eur(v)}</span>`;
 
 let marginChart, profitChart;
 
@@ -222,7 +222,7 @@ function render(d) {
       </div>
       <div class="card kpi-card">
         <div class="kpi-label">Gem. orderwaarde</div>
-        <div class="kpi-value">${€(k.avg_revenue)}</div>
+        <div class="kpi-value">${eur(k.avg_revenue)}</div>
         <div class="kpi-sub">excl. BTW</div>
       </div>
       <div class="card kpi-card">
@@ -232,17 +232,17 @@ function render(d) {
       </div>
       <div class="card kpi-card">
         <div class="kpi-label">Gem. gross profit</div>
-        <div class="kpi-value">${€(k.avg_gross_profit)}</div>
+        <div class="kpi-value">${eur(k.avg_gross_profit)}</div>
         <div class="kpi-sub">per order</div>
       </div>
       <div class="card kpi-card">
         <div class="kpi-label">Gem. kosten</div>
-        <div class="kpi-value">${€(k.avg_cost)}</div>
+        <div class="kpi-value">${eur(k.avg_cost)}</div>
         <div class="kpi-sub">ship + mkt + voucher</div>
       </div>
       <div class="card kpi-card">
         <div class="kpi-label">Gem. profit</div>
-        <div class="kpi-value" style="color:${k.avg_profit>=0?'var(--green)':'var(--red)'}">${€(k.avg_profit)}</div>
+        <div class="kpi-value" style="color:${k.avg_profit>=0?'var(--green)':'var(--red)'}">${eur(k.avg_profit)}</div>
         <div class="kpi-sub">netto per order</div>
       </div>
     </div>
@@ -279,12 +279,12 @@ function render(d) {
           <div class="split-kpi">
             <div class="kpi-label">Nieuwe klanten</div>
             <div class="kpi-value" style="font-size:20px">${n(k.new_orders)}</div>
-            <div class="kpi-sub">${€(k.new_avg_profit)} profit/order</div>
+            <div class="kpi-sub">${eur(k.new_avg_profit)} profit/order</div>
           </div>
           <div class="split-kpi">
             <div class="kpi-label">Bestaande klanten</div>
             <div class="kpi-value" style="font-size:20px">${n(k.existing_orders)}</div>
-            <div class="kpi-sub">${€(k.existing_avg_profit)} profit/order</div>
+            <div class="kpi-sub">${eur(k.existing_avg_profit)} profit/order</div>
             <div class="kpi-badge badge-blue">${pct(k.pct_existing)} bestaand</div>
           </div>
         </div>
@@ -295,12 +295,12 @@ function render(d) {
           <div class="split-kpi">
             <div class="kpi-label">België</div>
             <div class="kpi-value" style="font-size:20px">${n(k.be_orders)}</div>
-            <div class="kpi-sub">${€(k.be_avg_profit)} profit/order</div>
+            <div class="kpi-sub">${eur(k.be_avg_profit)} profit/order</div>
           </div>
           <div class="split-kpi">
             <div class="kpi-label">Nederland</div>
             <div class="kpi-value" style="font-size:20px">${n(k.nl_orders)}</div>
-            <div class="kpi-sub">${€(k.nl_avg_profit)} profit/order</div>
+            <div class="kpi-sub">${eur(k.nl_avg_profit)} profit/order</div>
             <div class="kpi-badge badge-blue">${pct(k.be_pct)} BE</div>
           </div>
         </div>
@@ -310,15 +310,15 @@ function render(d) {
         <div class="totals-big">
           <div class="total-row">
             <span class="total-lbl">Omzet</span>
-            <span class="total-val">${€(k.total_revenue, 0)}</span>
+            <span class="total-val">${eur(k.total_revenue, 0)}</span>
           </div>
           <div class="total-row">
             <span class="total-lbl">Gross profit</span>
-            <span class="total-val">${€(k.total_gross_profit, 0)}</span>
+            <span class="total-val">${eur(k.total_gross_profit, 0)}</span>
           </div>
           <div class="total-row">
             <span class="total-lbl">Ad spend</span>
-            <span class="total-val">${€(k.total_ad_spend, 0)}</span>
+            <span class="total-val">${eur(k.total_ad_spend, 0)}</span>
           </div>
         </div>
       </div>
@@ -411,13 +411,13 @@ function renderTable(sources) {
       <td>${r.source}</td>
       <td>${n(r.orders)}</td>
       <td><div class="pct-bar">${pct(r.pct)}<div class="bar-bg"><div class="bar-fill" style="width:${Math.min(r.pct,100)}%"></div></div></div></td>
-      <td>${r.revenue != null ? €(r.revenue,0) : '—'}</td>
+      <td>${r.revenue != null ? eur(r.revenue,0) : '—'}</td>
       <td>${r.gross_margin_pct != null ? pct(r.gross_margin_pct) : '—'}</td>
-      <td>${r.gross_profit_order != null ? €(r.gross_profit_order) : '—'}</td>
-      <td>${r.marketing_cost_order != null ? €(r.marketing_cost_order) : '—'}</td>
-      <td>${r.shipping_cost_order != null ? €(r.shipping_cost_order) : '—'}</td>
-      <td>${r.cost_order != null ? €(r.cost_order) : '—'}</td>
-      <td style="font-weight:600;color:${r.profit_order >= 0 ? 'var(--green)' : 'var(--red)'}">${r.profit_order != null ? €(r.profit_order) : '—'}</td>
+      <td>${r.gross_profit_order != null ? eur(r.gross_profit_order) : '—'}</td>
+      <td>${r.marketing_cost_order != null ? eur(r.marketing_cost_order) : '—'}</td>
+      <td>${r.shipping_cost_order != null ? eur(r.shipping_cost_order) : '—'}</td>
+      <td>${r.cost_order != null ? eur(r.cost_order) : '—'}</td>
+      <td style="font-weight:600;color:${r.profit_order >= 0 ? 'var(--green)' : 'var(--red)'}">${r.profit_order != null ? eur(r.profit_order) : '—'}</td>
     </tr>`;
   }).join('');
 }
