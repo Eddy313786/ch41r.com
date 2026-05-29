@@ -351,7 +351,7 @@ function render(d) {
 
   // Charts
   const daily = d.daily || [];
-  const labels = daily.map(r => r.date.slice(5)); // MM-DD
+  const labels = daily.map(r => (r.dt || r.date || '').slice(5)); // MM-DD
   const chartOpts = {
     responsive: true, maintainAspectRatio: true,
     interaction: { mode: 'index', intersect: false },
