@@ -16,8 +16,8 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
   .logo {
-    width: 160px;
-    height: 160px;
+    width: 280px;
+    height: 280px;
     margin-bottom: 48px;
   }
   form {
@@ -42,22 +42,25 @@
   button {
     margin-top: 4px;
     padding: 12px;
-    background: #1a1a1a;
-    color: #fff;
-    border: none;
+    background: #fff;
+    color: #1a1a1a;
+    border: 1.5px solid #1a1a1a;
     border-radius: 8px;
     font-size: 15px;
     cursor: pointer;
     letter-spacing: 0.5px;
-    transition: opacity 0.15s;
+    transition: background 0.15s, color 0.15s;
   }
-  button:hover { opacity: 0.8; }
+  button:hover {
+    background: #1a1a1a;
+    color: #fff;
+  }
 </style>
 </head>
 <body>
   <img class="logo" src="Logo.png" alt="CH41R"/>
   <form>
-    <input type="email" placeholder="email" autocomplete="email"/>
+    <input type="text" placeholder="username" autocomplete="username"/>
     <input type="password" placeholder="password" autocomplete="current-password"/>
     <button type="submit">log in</button>
   </form>
