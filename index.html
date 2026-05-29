@@ -20,16 +20,8 @@
     align-items: stretch;
     width: 280px;
   }
-  .logo {
-    width: 100%;
-    display: block;
-    margin-bottom: 48px;
-  }
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
+  .logo { width: 100%; display: block; margin-bottom: 48px; }
+  form { display: flex; flex-direction: column; gap: 12px; }
   input {
     padding: 12px 16px;
     border: 1.5px solid #e0e0e0;
@@ -37,7 +29,6 @@
     font-size: 15px;
     outline: none;
     transition: border-color 0.15s;
-    background: #fff;
     color: #1a1a1a;
   }
   input:focus { border-color: #1a1a1a; }
@@ -55,16 +46,102 @@
     transition: background 0.15s, color 0.15s;
   }
   button:hover { background: #1a1a1a; color: #fff; }
+  .request-link {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: #aaa;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .request-link:hover { color: #1a1a1a; }
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.15);
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .modal p { font-size: 14px; color: #666; }
+  .modal-title { font-size: 16px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; }
+  #msg { font-size: 13px; color: #888; min-height: 20px; text-align: center; }
 </style>
 </head>
 <body>
   <div class="container">
     <img class="logo" src="Logo.png" alt="CH41R"/>
-    <form>
-      <input type="text" placeholder="username" autocomplete="username"/>
-      <input type="password" placeholder="password" autocomplete="current-password"/>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="username" autocomplete="username"/>
+      <input type="password" id="password" placeholder="password" autocomplete="current-password"/>
       <button type="submit">log in</button>
     </form>
+    <a class="request-link" id="requestLink">request access</a>
   </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-title">Request access</div>
+      <p>Enter your email and we'll reach out when your access is approved.</p>
+      <input type="email" id="requestEmail" placeholder="your@email.com"/>
+      <button id="requestBtn">send request</button>
+      <div id="msg"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      if (res.ok) {
+        window.location.href = '/dashboard';
+      } else {
+        document.getElementById('password').style.borderColor = '#e00';
+      }
+    });
+
+    document.getElementById('requestLink').addEventListener('click', () => {
+      document.getElementById('modalOverlay').classList.add('active');
+    });
+
+    document.getElementById('modalOverlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('modalOverlay'))
+        document.getElementById('modalOverlay').classList.remove('active');
+    });
+
+    document.getElementById('requestBtn').addEventListener('click', async () => {
+      const email = document.getElementById('requestEmail').value;
+      const msg = document.getElementById('msg');
+      if (!email) return;
+      const res = await fetch('/api/request-access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (res.ok) {
+        msg.textContent = 'Request sent — you\'ll hear from us soon.';
+        document.getElementById('requestBtn').disabled = true;
+      } else {
+        msg.textContent = 'Something went wrong, try again.';
+      }
+    });
+  </script>
 </body>
 </html>
