@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pazzox — Home</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; display: flex; flex-direction: column; }
+
+  header {
+    background: #fff;
+    border-bottom: 1px solid #e8eaed;
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .logo { height: 36px; width: 36px; object-fit: contain; }
+  .home-btn {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 13px; color: #6b7280; text-decoration: none;
+    padding: 5px 10px; border-radius: 6px; border: 1px solid #e8eaed;
+    background: #fff; transition: all .15s; cursor: pointer;
+  }
+  .home-btn:hover { background: #f0f2f5; color: #1a1d23; }
+  .home-icon { font-size: 14px; }
+
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .user-pill {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 13px; color: #374151;
+    background: #f9fafb; border: 1px solid #e8eaed;
+    padding: 5px 12px; border-radius: 99px;
+  }
+  .user-avatar {
+    width: 22px; height: 22px; background: #0ea5e9;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #fff;
+  }
+  .logout-btn {
+    font-size: 13px; color: #6b7280; cursor: pointer;
+    padding: 5px 12px; border-radius: 6px;
+    border: 1px solid #e8eaed; background: #fff; transition: all .15s;
+  }
+  .logout-btn:hover { background: #f0f2f5; color: #1a1d23; }
+
+  main { flex: 1; padding: 40px 32px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; max-width: 900px; }
+
+  .client-card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+    padding: 24px; cursor: pointer; text-decoration: none; color: inherit;
+    display: block; transition: transform .15s, box-shadow .15s, border-color .15s;
+    border: 1px solid transparent;
+  }
+  .client-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.1); border-color: #0ea5e9; }
+  .client-logo-text { font-size: 22px; font-weight: 800; color: #0ea5e9; margin-bottom: 8px; }
+  .client-name { font-size: 16px; font-weight: 600; color: #1a1d23; margin-bottom: 4px; }
+  .client-desc { font-size: 13px; color: #6b7280; line-height: 1.5; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: #dbeafe; color: #1d4ed8; margin-top: 10px; }
+
+  body.hidden { visibility: hidden; }
+</style>
+</head>
+<body class="hidden">
+<header>
+  <div class="header-left">
+    <img src="/Logo.png" class="logo" alt="CH41R"/>
+    <a href="/PazzoxHome" class="home-btn">
+      <span class="home-icon">⌂</span> Home
+    </a>
+  </div>
+  <div class="header-right">
+    <div class="user-pill">
+      <div class="user-avatar" id="avatarInitial">?</div>
+      <span id="username">—</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">Log out</button>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+    <a href="/PazzoxDashboard" class="client-card">
+      <div class="client-logo-text">Pazzox</div>
+      <div class="client-name">Pazzox.be</div>
+      <div class="client-desc">Online apotheek — omzet, marges &amp; kanaalanalyse</div>
+      <div class="tag">Revenue dashboard</div>
+    </a>
+  </div>
+</main>
+
+<script>
+  fetch('/api/verify')
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(data => {
+      const name = data.username || '';
+      document.getElementById('username').textContent = name;
+      document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
+      document.body.classList.remove('hidden');
+    })
+    .catch(() => window.location.replace('/'));
+
+  function logout() {
+    document.cookie = 'ch41r_session=; Path=/; Max-Age=0';
+    window.location.replace('/');
+  }
+</script>
+</body>
+</html>

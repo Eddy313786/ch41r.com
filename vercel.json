@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/dashboard", "destination": "/dashboard.html" },
-    { "source": "/pazzox", "destination": "/pazzox.html" }
+    { "source": "/PazzoxHome",      "destination": "/PazzoxHome.html" },
+    { "source": "/PazzoxDashboard", "destination": "/PazzoxDashboard.html" }
   ]
 }

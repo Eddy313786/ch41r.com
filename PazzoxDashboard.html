@@ -135,11 +135,16 @@
 
 <header>
   <div class="header-left">
-    <div class="brand">Pazz<span>ox</span></div>
-    <div class="page-title">Revenue dashboard</div>
+    <img src="/Logo.png" style="height:36px;width:36px;object-fit:contain;" alt="CH41R"/>
+    <a href="/PazzoxHome" class="back-btn" style="display:flex;align-items:center;gap:5px;">⌂ Home</a>
+    <div class="page-title">Pazzox — Revenue dashboard</div>
   </div>
   <div class="header-right">
-    <a href="/dashboard" class="back-btn">← Terug</a>
+    <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#374151;background:#f9fafb;border:1px solid var(--border);padding:5px 12px;border-radius:99px;">
+      <div id="avatarInitial" style="width:22px;height:22px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;">?</div>
+      <span id="username">—</span>
+    </div>
+    <button onclick="logout()" style="font-size:13px;color:#6b7280;cursor:pointer;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:#fff;">Log out</button>
   </div>
 </header>
 
@@ -421,6 +426,19 @@ function renderTable(sources) {
 function sortTable(col) {
   sortCol = col; sortDir *= -1;
   renderTable(tableData);
+}
+
+fetch('/api/verify')
+  .then(r => r.ok ? r.json() : Promise.reject())
+  .then(data => {
+    const name = data.username || '';
+    document.getElementById('username').textContent = name;
+    document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
+  }).catch(() => window.location.replace('/'));
+
+function logout() {
+  document.cookie = 'ch41r_session=; Path=/; Max-Age=0';
+  window.location.replace('/');
 }
 
 load();
