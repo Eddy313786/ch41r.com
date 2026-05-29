@@ -4,59 +4,69 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CH41R</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    overflow: hidden;
+    display: flex;
     background: #fff;
   }
 
-  /* ── Left ── */
+  /* LEFT PANEL */
   .left {
+    width: 50%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 48px 64px;
-    justify-content: space-between;
+    align-items: flex-start;
+    padding: 52px 64px;
   }
 
-  .logo-full { height: 48px; object-fit: contain; }
+  /* Logo — left, big */
+  .logo-full {
+    height: 56px;
+    object-fit: contain;
+    margin-bottom: auto;
+  }
 
-  .form-area {
-    display: flex;
-    flex-direction: column;
+  /* Form block — centered vertically, fixed width */
+  .form-block {
+    width: 100%;
+    max-width: 420px;
+    margin: auto 0;
+    padding: 0;
   }
 
   h1 {
-    font-size: 44px;
+    font-size: 42px;
     font-weight: 800;
     color: #0f172a;
-    letter-spacing: -1.5px;
+    letter-spacing: -1.2px;
     margin-bottom: 10px;
   }
+
   .subtitle {
     font-size: 17px;
     color: #64748b;
-    margin-bottom: 44px;
+    font-weight: 400;
+    margin-bottom: 40px;
   }
 
-  /* Floating label fields — max width */
+  /* Input fields */
   .field {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
   .field input {
     width: 100%;
-    height: 62px;
-    padding: 26px 18px 8px;
+    height: 64px;
+    padding: 22px 18px 8px;
     border: 1.5px solid #e2e8f0;
     border-radius: 14px;
-    font-size: 16px;
+    font-size: 17px;
     font-family: inherit;
     color: #0f172a;
     background: #fff;
@@ -69,11 +79,11 @@
     left: 18px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 15px;
+    font-size: 16px;
     color: #94a3b8;
     font-weight: 500;
     pointer-events: none;
-    transition: all .15s ease;
+    transition: all .15s;
   }
   .field input:focus ~ label,
   .field input:not(:placeholder-shown) ~ label {
@@ -86,6 +96,7 @@
     letter-spacing: .5px;
   }
 
+  /* Remember me + Forgot */
   .remember-row {
     display: flex;
     align-items: center;
@@ -96,46 +107,43 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 14px;
+    font-size: 15px;
     color: #475569;
-    cursor: pointer;
     font-weight: 500;
+    cursor: pointer;
   }
   .remember-label input[type=checkbox] {
-    width: 16px;
-    height: 16px;
+    width: 17px; height: 17px;
     accent-color: #0d9488;
     cursor: pointer;
   }
-  .forgot { font-size: 14px; color: #ef4444; font-weight: 600; cursor: pointer; }
+  .forgot { font-size: 15px; color: #ef4444; font-weight: 600; cursor: pointer; }
   .forgot:hover { text-decoration: underline; }
 
-  .btn-row {
-    display: flex;
-    gap: 14px;
-  }
+  /* Buttons */
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
   .btn-login {
-    flex: 1;
-    padding: 17px;
+    padding: 18px;
     background: #0d9488;
     color: #fff;
     border: none;
     border-radius: 14px;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
     transition: background .15s;
   }
   .btn-login:hover { background: #0f766e; }
+
   .btn-request {
-    flex: 1;
-    padding: 17px;
+    padding: 18px;
     background: #fff;
     color: #0f172a;
-    border: 1.5px solid #e2e8f0;
+    border: 1.5px solid #cbd5e1;
     border-radius: 14px;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
@@ -143,44 +151,52 @@
   }
   .btn-request:hover { border-color: #0d9488; }
 
-  .error-msg { font-size: 13px; color: #ef4444; font-weight: 500; margin-top: 14px; min-height: 18px; }
+  .error-msg { font-size: 14px; color: #ef4444; font-weight: 500; margin-top: 14px; min-height: 20px; }
 
-  .legal { font-size: 12px; color: #94a3b8; line-height: 1.6; }
+  /* Legal */
+  .legal {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-top: auto;
+    max-width: 420px;
+  }
 
-  /* ── Right ── */
+  /* RIGHT PANEL */
   .right {
-    position: relative;
-    overflow: hidden;
+    width: 50%;
     margin: 16px 16px 16px 0;
     border-radius: 28px;
     background: #042f2e;
+    position: relative;
+    overflow: hidden;
   }
   .right-bg {
     position: absolute; inset: 0;
-    background: linear-gradient(135deg, #042f2e 0%, #0d4f4a 50%, #0d9488 130%);
+    background: linear-gradient(140deg, #042f2e 0%, #0d5954 55%, #0d9488 120%);
   }
-  .right-pattern {
+  .right-grid {
     position: absolute; inset: 0; opacity: .04;
-    background-image: repeating-linear-gradient(-45deg,#fff 0,#fff 1px,transparent 0,transparent 14px);
+    background-image: repeating-linear-gradient(-45deg, #fff 0, #fff 1px, transparent 0, transparent 14px);
   }
-  .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .2; }
-  .b1 { width: 500px; height: 500px; background: #14b8a6; bottom: -150px; right: -80px; }
-  .b2 { width: 300px; height: 300px; background: #0d9488; top: -80px; left: -50px; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .25; }
+  .b1 { width: 480px; height: 480px; background: #14b8a6; bottom: -120px; right: -80px; }
+  .b2 { width: 280px; height: 280px; background: #0d9488; top: -60px; left: -40px; }
   .right-content {
     position: absolute; inset: 0;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    gap: 20px; padding: 60px;
+    gap: 20px; padding: 60px; text-align: center;
   }
   .right-logo { width: 120px; height: 120px; object-fit: contain; opacity: .18; filter: brightness(10); }
-  .right-title { font-size: 30px; font-weight: 800; color: #fff; text-align: center; letter-spacing: -0.5px; }
-  .right-sub { font-size: 15px; color: rgba(255,255,255,.55); text-align: center; line-height: 1.7; max-width: 240px; }
+  .right-title { font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -.5px; }
+  .right-sub { font-size: 15px; color: rgba(255,255,255,.5); line-height: 1.7; max-width: 230px; }
 
   /* Modal */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,.35); align-items: center; justify-content: center; z-index: 100;
-    backdrop-filter: blur(6px);
+    background: rgba(0,0,0,.4); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center; z-index: 100;
   }
   .modal-overlay.active { display: flex; }
   .modal {
@@ -191,8 +207,8 @@
   .modal-title { font-size: 22px; font-weight: 800; color: #0f172a; }
   .modal-sub { font-size: 14px; color: #64748b; margin-top: -8px; }
   .modal input {
-    padding: 15px 18px; border: 1.5px solid #e2e8f0; border-radius: 14px;
-    font-size: 15px; font-family: inherit; outline: none; width: 100%;
+    padding: 16px 18px; border: 1.5px solid #e2e8f0;
+    border-radius: 14px; font-size: 16px; font-family: inherit; outline: none; width: 100%;
   }
   .modal input:focus { border-color: #0d9488; }
   .modal-msg { font-size: 13px; color: #64748b; text-align: center; min-height: 18px; }
@@ -203,7 +219,7 @@
 <div class="left">
   <img src="Logo with name.png" class="logo-full" alt="CH41R"/>
 
-  <div class="form-area">
+  <div class="form-block">
     <h1>Welcome back!</h1>
     <p class="subtitle">Please log in to your account.</p>
 
@@ -216,14 +232,12 @@
         <input type="password" id="password" placeholder=" " autocomplete="current-password"/>
         <label for="password">Password</label>
       </div>
-
       <div class="remember-row">
         <label class="remember-label">
           <input type="checkbox" id="remember"/> Remember me
         </label>
         <span class="forgot">Forgot password?</span>
       </div>
-
       <div class="btn-row">
         <button type="submit" class="btn-login">Login</button>
         <button type="button" class="btn-request" id="requestBtn">Request access</button>
@@ -237,7 +251,7 @@
 
 <div class="right">
   <div class="right-bg"></div>
-  <div class="right-pattern"></div>
+  <div class="right-grid"></div>
   <div class="blob b1"></div>
   <div class="blob b2"></div>
   <div class="right-content">
@@ -269,9 +283,8 @@
     if (res.ok) { window.location.href = '/PazzoxHome'; }
     else { err.textContent = 'Incorrect username or password.'; document.getElementById('password').value = ''; }
   });
-
   document.getElementById('requestBtn').addEventListener('click', () => document.getElementById('modalOverlay').classList.add('active'));
-  document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) document.getElementById('modalOverlay').classList.remove('active'); });
+  document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) document.getElementById('modalOverlay').classList.remove('active'); });
   document.getElementById('sendRequest').addEventListener('click', async () => {
     const email = document.getElementById('requestEmail').value;
     if (!email) return;
