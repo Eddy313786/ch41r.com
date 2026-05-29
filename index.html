@@ -5,143 +5,362 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CH41R</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
   }
-  .container {
+
+  /* Left panel */
+  .left {
+    width: 50%;
+    min-width: 400px;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    width: 280px;
-  }
-  .logo { width: 100%; display: block; margin-bottom: 48px; }
-  form { display: flex; flex-direction: column; gap: 12px; }
-  input {
-    padding: 12px 16px;
-    border: 1.5px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.15s;
-    color: #1a1a1a;
-  }
-  input:focus { border-color: #1a1a1a; }
-  input::placeholder { color: #aaa; }
-  button {
-    margin-top: 4px;
-    padding: 12px;
+    padding: 40px 56px;
     background: #fff;
-    color: #1a1a1a;
-    border: 1.5px solid #1a1a1a;
-    border-radius: 8px;
+    position: relative;
+  }
+
+  .logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+  }
+
+  .form-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 380px;
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1d23;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
     font-size: 15px;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-    transition: background 0.15s, color 0.15s;
+    color: #6b7280;
+    margin-bottom: 36px;
   }
-  button:hover { background: #1a1a1a; color: #fff; }
-  .request-link {
-    margin-top: 20px;
-    text-align: center;
+
+  .field {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .field label {
+    position: absolute;
+    top: 11px;
+    left: 16px;
+    font-size: 12px;
+    color: #9ca3af;
+    pointer-events: none;
+    transition: all .15s;
+    font-weight: 500;
+  }
+
+  .field input {
+    width: 100%;
+    padding: 28px 16px 10px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #1a1d23;
+    outline: none;
+    transition: border-color .15s;
+    background: #fff;
+  }
+
+  .field input:focus {
+    border-color: #0d9488;
+  }
+
+  .field input:focus + label,
+  .field input:not(:placeholder-shown) + label {
+    top: 8px;
+    font-size: 11px;
+    color: #0d9488;
+  }
+
+  /* Flip label to be before input in DOM for CSS sibling trick */
+  .field { display: flex; flex-direction: column; }
+  .field input { order: 2; }
+  .field label { order: 1; position: static; font-size: 12px; color: #6b7280; margin-bottom: 6px; font-weight: 500; }
+  .field input { padding: 12px 16px; }
+
+  .forgot-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 24px;
+  }
+
+  .forgot-link {
     font-size: 13px;
-    color: #aaa;
-    cursor: pointer;
+    color: #ef4444;
     text-decoration: none;
-    transition: color 0.15s;
+    cursor: pointer;
   }
-  .request-link:hover { color: #1a1a1a; }
+  .forgot-link:hover { text-decoration: underline; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: #0d9488;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s;
+    margin-bottom: 12px;
+  }
+  .btn-primary:hover { background: #0f766e; }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 14px;
+    background: #fff;
+    color: #1a1d23;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .btn-secondary:hover { border-color: #0d9488; background: #f0fdfc; }
+
+  .error-msg {
+    font-size: 13px;
+    color: #ef4444;
+    margin-top: 10px;
+    min-height: 18px;
+    text-align: center;
+  }
+
+  .legal {
+    font-size: 12px;
+    color: #9ca3af;
+    line-height: 1.5;
+    margin-top: 32px;
+  }
+
+  /* Modal */
   .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.15);
+    background: rgba(0,0,0,.2);
     align-items: center;
     justify-content: center;
+    z-index: 100;
   }
   .modal-overlay.active { display: flex; }
   .modal {
     background: #fff;
-    border-radius: 12px;
-    padding: 32px;
-    width: 280px;
+    border-radius: 16px;
+    padding: 36px;
+    width: 360px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.15);
   }
-  .modal p { font-size: 14px; color: #666; }
-  .modal-title { font-size: 16px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; }
-  #msg { font-size: 13px; color: #888; min-height: 20px; text-align: center; }
+  .modal-title { font-size: 18px; font-weight: 700; color: #1a1d23; }
+  .modal-sub { font-size: 14px; color: #6b7280; }
+  .modal-msg { font-size: 13px; color: #6b7280; text-align: center; min-height: 18px; }
+  .modal input {
+    padding: 12px 16px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+  }
+  .modal input:focus { border-color: #0d9488; }
+
+  /* Right panel */
+  .right {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #0a2a2a;
+  }
+
+  .right-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(13,148,136,.4) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(6,78,59,.6) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 40%, rgba(5,150,105,.2) 0%, transparent 40%);
+  }
+
+  .right-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: .06;
+    background-image: repeating-linear-gradient(
+      45deg,
+      #fff 0,
+      #fff 1px,
+      transparent 0,
+      transparent 50%
+    );
+    background-size: 20px 20px;
+  }
+
+  .right-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 60px;
+  }
+
+  /* Decorative chair illustration */
+  .chair-art {
+    width: 240px;
+    height: 240px;
+    opacity: .15;
+    filter: brightness(10);
+  }
+
+  .right-tagline {
+    color: rgba(255,255,255,.7);
+    font-size: 15px;
+    text-align: center;
+    letter-spacing: .5px;
+    max-width: 280px;
+    line-height: 1.6;
+  }
+
+  .right-tagline strong {
+    color: #fff;
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+
+  @media (max-width: 768px) {
+    .right { display: none; }
+    .left { width: 100%; min-width: unset; }
+  }
 </style>
 </head>
 <body>
-  <div class="container">
-    <img class="logo" src="Logo.png" alt="CH41R"/>
-    <form id="loginForm">
-      <input type="text" id="username" placeholder="username" autocomplete="username"/>
-      <input type="password" id="password" placeholder="password" autocomplete="current-password"/>
-      <button type="submit">log in</button>
-    </form>
-    <a class="request-link" id="requestLink">request access</a>
-  </div>
 
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal">
-      <div class="modal-title">Request access</div>
-      <p>Enter your email and we'll reach out when your access is approved.</p>
-      <input type="email" id="requestEmail" placeholder="your@email.com"/>
-      <button id="requestBtn">send request</button>
-      <div id="msg"></div>
+<div class="left">
+  <img src="Logo.png" class="logo" alt="CH41R"/>
+
+  <div class="form-area">
+    <h1>Welcome back!</h1>
+    <p class="subtitle">Please log in to your account.</p>
+
+    <form id="loginForm" autocomplete="off">
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder=" " autocomplete="username"/>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder=" " autocomplete="current-password"/>
+      </div>
+      <div class="forgot-row">
+        <span class="forgot-link">Forgot password?</span>
+      </div>
+      <button type="submit" class="btn-primary">Login</button>
+      <button type="button" class="btn-secondary" id="requestBtn">Request access</button>
+      <div class="error-msg" id="errorMsg"></div>
+    </form>
+
+    <p class="legal">By signing in you agree to our terms and that you have read our data policy.</p>
+  </div>
+</div>
+
+<div class="right">
+  <div class="right-bg"></div>
+  <div class="right-pattern"></div>
+  <div class="right-content">
+    <img src="Logo.png" class="chair-art" alt=""/>
+    <div class="right-tagline">
+      <strong>CH41R Intelligence</strong>
+      Data-driven decisions, beautifully presented.
     </div>
   </div>
+</div>
 
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      if (res.ok) {
-        window.location.href = '/PazzoxHome';
-      } else {
-        document.getElementById('password').style.borderColor = '#e00';
-      }
-    });
+<!-- Request access modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">Request access</div>
+    <div class="modal-sub">Enter your email and we'll reach out when your access is approved.</div>
+    <input type="email" id="requestEmail" placeholder="your@email.com"/>
+    <button class="btn-primary" id="sendRequest">Send request</button>
+    <div class="modal-msg" id="modalMsg"></div>
+  </div>
+</div>
 
-    document.getElementById('requestLink').addEventListener('click', () => {
-      document.getElementById('modalOverlay').classList.add('active');
+<script>
+  document.getElementById('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const err = document.getElementById('errorMsg');
+    err.textContent = '';
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
     });
+    if (res.ok) {
+      window.location.href = '/PazzoxHome';
+    } else {
+      err.textContent = 'Incorrect username or password.';
+      document.getElementById('password').value = '';
+    }
+  });
 
-    document.getElementById('modalOverlay').addEventListener('click', e => {
-      if (e.target === document.getElementById('modalOverlay'))
-        document.getElementById('modalOverlay').classList.remove('active');
-    });
+  document.getElementById('requestBtn').addEventListener('click', () => {
+    document.getElementById('modalOverlay').classList.add('active');
+  });
 
-    document.getElementById('requestBtn').addEventListener('click', async () => {
-      const email = document.getElementById('requestEmail').value;
-      const msg = document.getElementById('msg');
-      if (!email) return;
-      const res = await fetch('/api/request-access', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      if (res.ok) {
-        msg.textContent = 'Request sent — you\'ll hear from us soon.';
-        document.getElementById('requestBtn').disabled = true;
-      } else {
-        msg.textContent = 'Something went wrong, try again.';
-      }
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalOverlay'))
+      document.getElementById('modalOverlay').classList.remove('active');
+  });
+
+  document.getElementById('sendRequest').addEventListener('click', async () => {
+    const email = document.getElementById('requestEmail').value;
+    const msg = document.getElementById('modalMsg');
+    if (!email) return;
+    const res = await fetch('/api/request-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
     });
-  </script>
+    if (res.ok) {
+      msg.textContent = "Request sent — you'll hear from us soon.";
+      document.getElementById('sendRequest').disabled = true;
+    } else {
+      msg.textContent = 'Something went wrong, try again.';
+    }
+  });
+</script>
 </body>
 </html>
