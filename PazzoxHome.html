@@ -288,6 +288,7 @@
     <img src="/Klant Pazzox.png" style="height:28px;object-fit:contain;margin-bottom:4px;"/>
     <span id="mobileUsername" style="font-size:13px;color:#6b7280;">—</span>
   </div>
+  <a href="/Control" id="mobileControlLink" style="display:none;">Control</a>
   <button class="menu-logout" onclick="logout()">Log out</button>
 </div>
 
@@ -588,7 +589,7 @@ fetch('/api/verify')
     if (!data) return;
     const name = data.username || '';
     document.getElementById('username').textContent = name;
-    if (name === 'ward@ch41r.com') { const cl = document.getElementById('controlLink'); if(cl) cl.style.display=''; }
+    if (name === 'ward@ch41r.com') { const cl = document.getElementById('controlLink'); if(cl) cl.style.display=''; const mcl = document.getElementById('mobileControlLink'); if(mcl) mcl.style.display=''; }
     const mu = document.getElementById('mobileUsername'); if(mu) mu.textContent = name;
     if (name) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
   })
@@ -614,7 +615,7 @@ fetch('/api/verify')
     if (!data) return;
     const name = data.username || '';
     document.getElementById('username').textContent = name;
-    if (name === 'ward@ch41r.com') { const cl = document.getElementById('controlLink'); if(cl) cl.style.display=''; }
+    if (name === 'ward@ch41r.com') { const cl = document.getElementById('controlLink'); if(cl) cl.style.display=''; const mcl = document.getElementById('mobileControlLink'); if(mcl) mcl.style.display=''; }
     const mu = document.getElementById('mobileUsername'); if(mu) mu.textContent = name;
     if (name) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
     document.body.classList.remove('hidden');
