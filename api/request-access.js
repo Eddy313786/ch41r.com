@@ -18,7 +18,7 @@ module.exports = async function handler(req, res) {
   try {
     await resend.emails.send({
       from: 'hello@ch41r.com',
-      to: 'ward@ch41r.com',
+      to: 'ward.cecat@icloud.com',
       subject: `New access request: ${email}`,
       html: `
         <p><strong>${email}</strong> has requested access to ch41r.com.</p>
