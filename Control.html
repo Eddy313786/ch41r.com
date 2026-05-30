@@ -57,6 +57,19 @@
 
   body.hidden { visibility: hidden; }
 
+  @media (max-width: 600px) {
+    main { padding: 16px; }
+    table thead { display: none; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    tr { border-bottom: 1px solid #f0f2f5; padding: 14px 16px; }
+    tr:last-child { border-bottom: none; }
+    tr:hover td { background: none; }
+    td { padding: 2px 0; border: none; }
+    td strong { font-size: 15px; }
+    .date { font-size: 12px; color: #9ca3af; }
+    td .btn-approve, td .btn-revoke { margin-top: 10px; width: 100%; padding: 10px; font-size: 14px; }
+  }
+
   .hamburger { display: none; }
   .mobile-menu { display: none; }
   @media (max-width: 768px) {
