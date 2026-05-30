@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/Logo.png">
+<title>CH41R — Control</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f0f2f5; min-height: 100vh; }
+
+  header {
+    background: #fff; padding: 0 32px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 2px solid #FF8C42;
+    box-shadow: 0 2px 12px rgba(255,140,66,.18);
+  }
+  .logo { height: 44px; object-fit: contain; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .user-pill { display: flex; align-items: center; gap: 7px; font-size: 13px; color: #374151; background: #f9fafb; border: 1px solid #e8eaed; padding: 5px 12px; border-radius: 99px; }
+  .avatar { width: 22px; height: 22px; background: #0d9488; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; }
+  .btn-back { font-size: 13px; color: #6b7280; cursor: pointer; padding: 5px 12px; border-radius: 6px; border: 1px solid #e8eaed; background: #fff; text-decoration: none; }
+
+  main { padding: 32px; max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+
+  .section { background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04); overflow: hidden; }
+  .section-header { padding: 20px 24px; border-bottom: 1px solid #f0f2f5; display: flex; align-items: center; justify-content: space-between; }
+  .section-title { font-size: 16px; font-weight: 700; color: #1a1d23; }
+  .badge { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 99px; background: #dbeafe; color: #1d4ed8; }
+  .badge-orange { background: #ffedd5; color: #c2410c; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { padding: 10px 20px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #6b7280; background: #f8f9fb; }
+  td { padding: 14px 20px; border-bottom: 1px solid #f0f2f5; color: #1a1d23; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbfc; }
+
+  .btn-approve {
+    padding: 7px 16px; background: #0d9488; color: #fff; border: none;
+    border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: background .15s;
+  }
+  .btn-approve:hover { background: #0f766e; }
+  .btn-revoke {
+    padding: 7px 16px; background: #fff; color: #ef4444; border: 1.5px solid #fca5a5;
+    border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: all .15s;
+  }
+  .btn-revoke:hover { background: #fef2f2; }
+  .btn-revoke:disabled { opacity: .4; cursor: not-allowed; }
+
+  .empty { padding: 32px; text-align: center; color: #9ca3af; font-size: 14px; }
+  .date { font-size: 12px; color: #9ca3af; }
+  .tag-pending { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #c2410c; background: #ffedd5; padding: 3px 10px; border-radius: 99px; }
+
+  body.hidden { visibility: hidden; }
+</style>
+</head>
+<body class="hidden">
+
+<header>
+  <a href="/PazzoxHome"><img src="/Logo with name and lab.png" class="logo" alt="CH41R"/></a>
+  <div class="header-right">
+    <a href="/PazzoxHome" class="btn-back">← Terug</a>
+    <div class="user-pill">
+      <div class="avatar" id="avatarInitial">?</div>
+      <span id="username">—</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Pending requests -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Toegangsaanvragen</div>
+      <span class="badge badge-orange" id="pendingCount">0 pending</span>
+    </div>
+    <table>
+      <thead><tr>
+        <th>Email</th>
+        <th>Aangevraagd op</th>
+        <th>Status</th>
+        <th></th>
+      </tr></thead>
+      <tbody id="pendingBody"><tr><td colspan="4" class="empty">Laden...</td></tr></tbody>
+    </table>
+  </div>
+
+  <!-- Users -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Gebruikers</div>
+      <span class="badge" id="userCount">0 users</span>
+    </div>
+    <table>
+      <thead><tr>
+        <th>Username</th>
+        <th>Aangemaakt op</th>
+        <th></th>
+      </tr></thead>
+      <tbody id="usersBody"><tr><td colspan="3" class="empty">Laden...</td></tr></tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+const ADMIN = 'ward@ch41r.com';
+
+fetch('/api/verify')
+  .then(r => r.ok ? r.json() : Promise.reject())
+  .then(data => {
+    if (data.username !== ADMIN) { window.location.replace('/PazzoxHome'); return; }
+    document.getElementById('username').textContent = data.username;
+    document.getElementById('avatarInitial').textContent = data.username.charAt(0).toUpperCase();
+    document.body.classList.remove('hidden');
+    loadData();
+  })
+  .catch(() => window.location.replace('/'));
+
+async function loadData() {
+  const res = await fetch('/api/admin-data');
+  if (!res.ok) return;
+  const { pending, users } = await res.json();
+
+  document.getElementById('pendingCount').textContent = `${pending.length} pending`;
+  document.getElementById('userCount').textContent = `${users.length} users`;
+
+  const pb = document.getElementById('pendingBody');
+  pb.innerHTML = pending.length === 0
+    ? '<tr><td colspan="4" class="empty">Geen openstaande aanvragen</td></tr>'
+    : pending.map(r => `<tr>
+        <td><strong>${r.email}</strong></td>
+        <td class="date">${new Date(r.created_at).toLocaleString('nl-BE')}</td>
+        <td><span class="tag-pending">⏳ Pending</span></td>
+        <td><button class="btn-approve" onclick="approve('${r.id}','${r.email}',this)">Approve</button></td>
+      </tr>`).join('');
+
+  const ub = document.getElementById('usersBody');
+  ub.innerHTML = users.map(r => `<tr>
+      <td>${r.username}</td>
+      <td class="date">${new Date(r.created_at).toLocaleString('nl-BE')}</td>
+      <td>${r.username !== ADMIN ? `<button class="btn-revoke" onclick="revoke('${r.id}','${r.username}',this)">Revoke</button>` : '<span style="color:#9ca3af;font-size:12px;">admin</span>'}</td>
+    </tr>`).join('');
+}
+
+async function approve(id, email, btn) {
+  btn.disabled = true; btn.textContent = '...';
+  const res = await fetch('/api/admin-approve', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, email })
+  });
+  if (res.ok) { loadData(); }
+  else { btn.textContent = 'Error'; btn.disabled = false; }
+}
+
+async function revoke(id, username, btn) {
+  if (!confirm(`Toegang verwijderen voor ${username}?`)) return;
+  btn.disabled = true;
+  const res = await fetch('/api/admin-revoke', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id })
+  });
+  if (res.ok) { loadData(); }
+  else { btn.disabled = false; }
+}
+</script>
+</body>
+</html>

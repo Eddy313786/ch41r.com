@@ -265,6 +265,7 @@
     <a href="#">About us</a>
     <a href="#">Insights</a>
     <a href="#">Contact</a>
+    <a href="/Control" id="controlLink" style="display:none;">Control</a>
   </nav>
   <div class="header-right">
     <div class="user-pill">
@@ -587,6 +588,7 @@ fetch('/api/verify')
     if (!data) return;
     const name = data.username || '';
     document.getElementById('username').textContent = name;
+    if (name === 'ward@ch41r.com') { const cl = document.getElementById('controlLink'); if(cl) cl.style.display=''; }
     const mu = document.getElementById('mobileUsername'); if(mu) mu.textContent = name;
     if (name) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
   })
@@ -612,6 +614,7 @@ fetch('/api/verify')
     if (!data) return;
     const name = data.username || '';
     document.getElementById('username').textContent = name;
+    if (name === 'ward@ch41r.com') { const cl = document.getElementById('controlLink'); if(cl) cl.style.display=''; }
     const mu = document.getElementById('mobileUsername'); if(mu) mu.textContent = name;
     if (name) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
     document.body.classList.remove('hidden');

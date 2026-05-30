@@ -1,6 +1,16 @@
 {
   "rewrites": [
-    { "source": "/PazzoxHome",      "destination": "/PazzoxHome.html" },
-    { "source": "/PazzoxDashboard", "destination": "/PazzoxDashboard.html" }
+    {
+      "source": "/PazzoxHome",
+      "destination": "/PazzoxHome.html"
+    },
+    {
+      "source": "/PazzoxDashboard",
+      "destination": "/PazzoxDashboard.html"
+    },
+    {
+      "source": "/Control",
+      "destination": "/Control.html"
+    }
   ]
 }
