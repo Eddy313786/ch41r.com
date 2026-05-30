@@ -9,7 +9,8 @@ const supabase = createClient(
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
-  const { username, password } = req.body;
+  const { password } = req.body;
+  const username = (req.body.username || '').toLowerCase().trim();
   if (!username || !password) return res.status(400).json({ error: 'Missing fields' });
 
   const { data: user } = await supabase
