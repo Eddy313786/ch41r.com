@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="/Logo.png">
 <title>CH41R — Control</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f0f2f5; min-height: 100vh; }
@@ -62,12 +62,19 @@
 
 <header>
   <a href="/PazzoxHome"><img src="/Logo with name and lab.png" class="logo" alt="CH41R"/></a>
+  <nav style="display:flex;align-items:center;gap:4px;">
+    <a href="/PazzoxHome" style="font-family:'Nunito',sans-serif;font-size:20px;font-weight:700;color:#6b7280;text-decoration:none;padding:6px 16px;border-radius:8px;">Dashboards</a>
+    <a href="#" style="font-family:'Nunito',sans-serif;font-size:20px;font-weight:700;color:#6b7280;text-decoration:none;padding:6px 16px;border-radius:8px;">About us</a>
+    <a href="#" style="font-family:'Nunito',sans-serif;font-size:20px;font-weight:700;color:#6b7280;text-decoration:none;padding:6px 16px;border-radius:8px;">Insights</a>
+    <a href="#" style="font-family:'Nunito',sans-serif;font-size:20px;font-weight:700;color:#6b7280;text-decoration:none;padding:6px 16px;border-radius:8px;">Contact</a>
+    <a href="/Control" style="font-family:'Nunito',sans-serif;font-size:20px;font-weight:700;color:#0d9488;text-decoration:none;padding:6px 16px;border-radius:8px;">Control</a>
+  </nav>
   <div class="header-right">
-    <a href="/PazzoxHome" class="btn-back">← Terug</a>
     <div class="user-pill">
       <div class="avatar" id="avatarInitial">?</div>
       <span id="username">—</span>
     </div>
+    <button onclick="logout()" class="btn-back">Log out</button>
   </div>
 </header>
 
@@ -119,6 +126,8 @@ fetch('/api/verify')
     loadData();
   })
   .catch(() => window.location.replace('/'));
+
+function logout() { document.cookie = 'ch41r_session=; Path=/; Max-Age=0'; window.location.replace('/'); }
 
 async function loadData() {
   const res = await fetch('/api/admin-data');
