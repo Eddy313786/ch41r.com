@@ -56,6 +56,36 @@
   .tag-pending { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #c2410c; background: #ffedd5; padding: 3px 10px; border-radius: 99px; }
 
   body.hidden { visibility: hidden; }
+
+  .hamburger { display: none; }
+  .mobile-menu { display: none; }
+  @media (max-width: 768px) {
+    nav { display: none !important; }
+    .header-right { display: none !important; }
+    .hamburger {
+      display: flex; flex-direction: column; gap: 5px; cursor: pointer;
+      background: none; border: none; padding: 8px;
+    }
+    .hamburger span { display: block; width: 24px; height: 2px; background: #1a1d23; border-radius: 2px; }
+    .mobile-menu {
+      position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+      background: #fff; z-index: 99; flex-direction: column; padding: 16px 24px; gap: 0;
+      overflow-y: auto;
+    }
+    .mobile-menu.open { display: flex !important; }
+    .mobile-menu a {
+      font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 700;
+      color: #1a1d23; text-decoration: none; padding: 18px 0;
+      border-bottom: 1px solid #f0f2f5; display: block;
+    }
+    .mobile-menu a.active { color: #0d9488; }
+    .mobile-menu .menu-user { padding: 18px 0; border-bottom: 1px solid #f0f2f5; }
+    .mobile-menu .menu-logout {
+      margin-top: 16px; width: 100%; padding: 14px; background: #f0f2f5;
+      border: none; border-radius: 12px; font-size: 16px; font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; color: #1a1d23;
+    }
+  }
 </style>
 </head>
 <body class="hidden">
@@ -76,7 +106,22 @@
     </div>
     <button onclick="logout()" class="btn-back">Log out</button>
   </div>
+  <button class="hamburger" onclick="toggleMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </button>
 </header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/PazzoxHome">Dashboards</a>
+  <a href="#">Features</a>
+  <a href="#">Insights</a>
+  <a href="#">Contact</a>
+  <a href="/Control" class="active">Control</a>
+  <div class="menu-user" style="flex-direction:column;align-items:flex-start;gap:4px;">
+    <span id="mobileUsername" style="font-size:13px;color:#6b7280;">—</span>
+  </div>
+  <button class="menu-logout" onclick="logout()">Log out</button>
+</div>
 
 <main>
   <!-- Pending requests -->
@@ -122,12 +167,14 @@ fetch('/api/verify')
     if (data.username !== ADMIN) { window.location.replace('/PazzoxHome'); return; }
     document.getElementById('username').textContent = data.username;
     document.getElementById('avatarInitial').textContent = data.username.charAt(0).toUpperCase();
+    const mu = document.getElementById('mobileUsername'); if(mu) mu.textContent = data.username;
     document.body.classList.remove('hidden');
     loadData();
   })
   .catch(() => window.location.replace('/'));
 
 function logout() { document.cookie = 'ch41r_session=; Path=/; Max-Age=0'; window.location.replace('/'); }
+function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
 
 async function loadData() {
   const res = await fetch('/api/admin-data');

@@ -2,7 +2,7 @@ const { createClient } = require('@supabase/supabase-js');
 const jwt = require('jsonwebtoken');
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
-const ADMIN = 'ward.cecat@icloud.com';
+const ADMIN = 'ward@ch41r.com';
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();

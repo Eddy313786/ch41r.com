@@ -6,7 +6,7 @@ const { randomBytes } = require('crypto');
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY);
-const ADMIN = 'ward.cecat@icloud.com';
+const ADMIN = 'ward@ch41r.com';
 
 function generatePassword() {
   return randomBytes(10).toString('base64').replace(/[+/=]/g, '').slice(0, 12);
