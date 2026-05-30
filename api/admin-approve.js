@@ -46,7 +46,7 @@ module.exports = async function handler(req, res) {
       html: `
         <p>Your access to ch41r.com has been approved.</p>
         <br>
-        <p><strong>Username:</strong> ${email}</p>
+        <p><strong>Username:</strong> <span style="user-select:all;">${email.replace('@','&#64;')}</span></p>
         <p><strong>Password:</strong></p>
         <p style="font-family:monospace;font-size:18px;letter-spacing:2px;background:#f0f2f5;padding:10px 16px;border-radius:8px;display:inline-block;user-select:all;">${password.trim()}</p>
         <p style="font-size:12px;color:#9ca3af;">Type this password manually — do not copy/paste to avoid invisible characters.</p>
