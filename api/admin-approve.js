@@ -47,7 +47,9 @@ module.exports = async function handler(req, res) {
         <p>Your access to ch41r.com has been approved.</p>
         <br>
         <p><strong>Username:</strong> ${email}</p>
-        <p><strong>Password:</strong> <code style="background:#f0f2f5;padding:2px 6px;border-radius:4px;font-size:15px;letter-spacing:1px;">${password.trim()}</code></p>
+        <p><strong>Password:</strong></p>
+        <p style="font-family:monospace;font-size:18px;letter-spacing:2px;background:#f0f2f5;padding:10px 16px;border-radius:8px;display:inline-block;user-select:all;">${password.trim()}</p>
+        <p style="font-size:12px;color:#9ca3af;">Type this password manually — do not copy/paste to avoid invisible characters.</p>
         <br>
         <a href="https://ch41r.com" style="display:inline-block;padding:12px 24px;background:#0d9488;color:#fff;text-decoration:none;border-radius:8px;">Log in</a>
       `
