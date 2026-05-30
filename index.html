@@ -213,6 +213,21 @@
   }
   .modal input:focus { border-color: #0d9488; }
   .modal-msg { font-size: 13px; color: #64748b; text-align: center; min-height: 18px; }
+
+  @media (max-width: 768px) {
+    body { grid-template-columns: 1fr; height: auto; min-height: 100vh; }
+    .right { display: none; }
+    .left { width: 100%; padding: 40px 28px; min-height: 100vh; }
+    h1 { font-size: 32px; }
+    .subtitle { font-size: 15px; margin-bottom: 32px; }
+    .field input { height: 56px; font-size: 15px; }
+    .remember-label { font-size: 14px; }
+    .forgot { font-size: 14px; }
+    .btn-login, .btn-request { font-size: 15px; padding: 15px; }
+    .legal { font-size: 14px; }
+    .logo-full { height: 60px; }
+    .form-block { max-width: 100%; margin-left: 0; }
+  }
 </style>
 </head>
 <body>
