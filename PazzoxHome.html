@@ -166,9 +166,7 @@
   td:first-child { text-align: left; font-weight: 600; }
   tr:last-child td { border-bottom: none; font-weight: 700; background: #f8f9fb; }
   tr:hover td { background: #fafbfc; }
-  .pct-bar { display: flex; align-items: center; gap: 8px; }
-  .bar-bg { width: 60px; height: 4px; background: var(--bg); border-radius: 99px; }
-  .bar-fill { height: 4px; background: var(--accent); border-radius: 99px; }
+
   .pos { color: var(--green); } .neg { color: var(--red); }
 
   /* Loading */
@@ -557,7 +555,7 @@ function renderTable(sources) {
     return `<tr>
       <td>${r.source}</td>
       <td>${n(r.orders)}</td>
-      <td><div class="pct-bar">${pct(r.pct)}<div class="bar-bg"><div class="bar-fill" style="width:${Math.min(r.pct,100)}%"></div></div></div></td>
+      <td style="text-align:right">${pct(r.pct)}</td>
       <td>${r.revenue != null ? eur(r.revenue,0) : '—'}</td>
       <td>${r.gross_margin_pct != null ? pct(r.gross_margin_pct) : '—'}</td>
       <td>${r.gross_profit_order != null ? eur(r.gross_profit_order) : '—'}</td>
