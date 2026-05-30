@@ -32,7 +32,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ success: true, note: 'Already a user' });
   }
 
-  const password = generatePassword();
+  const password = generatePassword().trim();
   const passwordHash = await bcrypt.hash(password, 10);
 
   await supabase.from('users').insert({ username: email, password_hash: passwordHash });
@@ -47,7 +47,7 @@ module.exports = async function handler(req, res) {
         <p>Your access to ch41r.com has been approved.</p>
         <br>
         <p><strong>Username:</strong> ${email}</p>
-        <p><strong>Password:</strong> ${password}</p>
+        <p><strong>Password:</strong> <code style="background:#f0f2f5;padding:2px 6px;border-radius:4px;font-size:15px;letter-spacing:1px;">${password.trim()}</code></p>
         <br>
         <a href="https://ch41r.com" style="display:inline-block;padding:12px 24px;background:#0d9488;color:#fff;text-decoration:none;border-radius:8px;">Log in</a>
       `
