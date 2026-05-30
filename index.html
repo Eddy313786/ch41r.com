@@ -292,6 +292,16 @@
 
 <div class="right"><img src="papaya-bw.png" style="width:100%;height:100%;object-fit:cover;display:block;"/></div>
 
+<div class="modal-overlay" id="forgotOverlay">
+  <div class="modal">
+    <div class="modal-title">Reset password</div>
+    <div class="modal-sub">Enter your username and we'll send you a new password.</div>
+    <input type="email" id="forgotEmail" placeholder="your@email.com"/>
+    <button class="btn-login" id="sendForgot">Send new password</button>
+    <div class="modal-msg" id="forgotMsg"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-title">Request access</div>
@@ -315,6 +325,22 @@
     else { err.textContent = 'Incorrect username or password.'; document.getElementById('password').value = ''; }
   });
   document.getElementById('requestBtn').addEventListener('click', () => document.getElementById('modalOverlay').classList.add('active'));
+  document.querySelector('.forgot').addEventListener('click', () => document.getElementById('forgotOverlay').classList.add('active'));
+  document.getElementById('forgotOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) document.getElementById('forgotOverlay').classList.remove('active'); });
+  document.getElementById('sendForgot').addEventListener('click', async () => {
+    const username = document.getElementById('forgotEmail').value.trim();
+    const msg = document.getElementById('forgotMsg');
+    if (!username) { msg.textContent = 'Please enter your email.'; msg.style.color = '#ef4444'; return; }
+    const btn = document.getElementById('sendForgot');
+    btn.disabled = true; btn.textContent = 'Sending...';
+    await fetch('/api/forgot-password', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username })
+    });
+    msg.textContent = 'If this account exists, a new password has been sent.';
+    msg.style.color = '#0d9488';
+    btn.textContent = 'Send new password'; btn.disabled = false;
+  });
   document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) document.getElementById('modalOverlay').classList.remove('active'); });
   document.getElementById('sendRequest').addEventListener('click', async () => {
     const email = document.getElementById('requestEmail').value;
