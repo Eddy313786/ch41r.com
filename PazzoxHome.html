@@ -186,6 +186,70 @@
 
 
   body.hidden { visibility: hidden; }
+
+  @media (max-width: 768px) {
+    /* Topbar */
+    header { padding: 0 16px; height: 56px; }
+    header .header-left img[alt="Pazzox"] { display: none; }
+    header .header-left div[style*="width:1px"] { display: none; }
+    nav { display: none; }
+    .user-pill { display: none; }
+    .logout-btn { display: none; }
+
+    .hamburger {
+      display: flex; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 8px; margin-left: auto;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: #1a1d23; border-radius: 2px; transition: all .2s;
+    }
+
+    .mobile-menu {
+      position: fixed; top: 56px; left: 0; right: 0;
+      background: #fff; border-bottom: 1px solid #e8eaed;
+      box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      z-index: 99; padding: 12px 0;
+      display: none; flex-direction: column;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: 'Nunito', sans-serif;
+      font-size: 18px; font-weight: 700; color: #374151;
+      padding: 14px 24px; text-decoration: none;
+      border-bottom: 1px solid #f0f2f5;
+    }
+    .mobile-menu a.active { color: #0d9488; }
+    .mobile-menu .menu-user {
+      padding: 14px 24px; font-size: 14px; color: #6b7280;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .mobile-menu .menu-logout {
+      margin: 8px 24px; padding: 12px;
+      background: #f0f2f5; border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 600; color: #374151;
+      cursor: pointer; font-family: inherit; text-align: left;
+    }
+
+    /* Filters */
+    .filters { padding: 12px 16px 0; flex-wrap: wrap; gap: 8px; }
+    select, input[type=date] { font-size: 13px; height: 34px; }
+
+    /* KPI grid */
+    .kpi-row { grid-template-columns: 1fr 1fr; }
+
+    /* Charts */
+    .charts-row { grid-template-columns: 1fr; }
+
+    /* Split cards */
+    .split-row { grid-template-columns: 1fr; }
+
+    /* Table: horizontal scroll */
+    .table-card { overflow-x: auto; }
+    table { min-width: 700px; }
+
+    main { padding: 16px; }
+  }
 </style>
 </head>
 <body class="hidden">
@@ -208,7 +272,21 @@
     </div>
     <button class="logout-btn" onclick="logout()">Log out</button>
   </div>
+  <div class="hamburger" onclick="toggleMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
 </header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/PazzoxHome" class="active">Dashboards</a>
+  <a href="#">About us</a>
+  <a href="#">Insights</a>
+  <a href="#">Contact</a>
+  <div class="menu-user">
+    <span id="mobileUsername">—</span>
+  </div>
+  <button class="menu-logout" onclick="logout()">Log out</button>
+</div>
 
 
 
@@ -504,10 +582,14 @@ fetch('/api/verify')
     if (!data) return;
     const name = data.username || '';
     document.getElementById('username').textContent = name;
+    const mu = document.getElementById('mobileUsername'); if(mu) mu.textContent = name;
     if (name) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
   })
   .catch(() => {});
 
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
 function logout() {
   document.cookie = 'ch41r_session=; Path=/; Max-Age=0';
   window.location.replace('/');
@@ -525,11 +607,15 @@ fetch('/api/verify')
     if (!data) return;
     const name = data.username || '';
     document.getElementById('username').textContent = name;
+    const mu = document.getElementById('mobileUsername'); if(mu) mu.textContent = name;
     if (name) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
     document.body.classList.remove('hidden');
   })
   .catch(() => window.location.replace('/'));
 
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
 function logout() {
   document.cookie = 'ch41r_session=; Path=/; Max-Age=0';
   window.location.replace('/');
