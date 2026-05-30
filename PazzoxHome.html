@@ -535,7 +535,7 @@ function render(d) {
   renderTable(d.sources || []);
 }
 
-let tableData = [], sortCol = 1, sortDir = -1;
+let tableData = [], sortCol = 1, sortDir = 1;
 function renderTable(sources) {
   tableData = sources;
   const totalOrders = tableData.reduce((s,r) => s + (Number(r.orders)||0), 0);
