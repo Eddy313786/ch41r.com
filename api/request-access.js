@@ -15,6 +15,7 @@ module.exports = async function handler(req, res) {
 
   await supabase.from('pending_requests').insert({ email, token, expires_at: expiresAt });
 
+  // Notify Ward
   try {
     await resend.emails.send({
       from: 'hello@ch41r.com',
@@ -25,7 +26,23 @@ module.exports = async function handler(req, res) {
         <p>Log in to <a href="https://ch41r.com/Control">ch41r.com/Control</a> to approve or decline.</p>
       `
     });
-  } catch(e) { console.error('Email error:', e); }
+  } catch(e) { console.error('Ward email error:', e); }
+
+  // Confirm to requester
+  try {
+    await resend.emails.send({
+      from: 'hello@ch41r.com',
+      to: email,
+      subject: 'We received your access request — CHAIR LAB',
+      html: `
+        <p>Hi,</p>
+        <p>We've received your request to access <strong>ch41r.com</strong>.</p>
+        <p>We'll review it shortly and notify you once approved.</p>
+        <br>
+        <p style="color:#6b7280;font-size:13px;">— CHAIR LAB</p>
+      `
+    });
+  } catch(e) { console.error('Requester email error:', e); }
 
   res.status(200).json({ success: true });
 };
