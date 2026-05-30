@@ -535,6 +535,9 @@ function render(d) {
 let tableData = [], sortCol = 1, sortDir = -1;
 function renderTable(sources) {
   tableData = sources;
+  const totalOrders = tableData.reduce((s,r) => s + (Number(r.orders)||0), 0);
+  tableData = tableData.map(r => ({...r, pct: totalOrders ? Number(r.orders)/totalOrders*100 : 0}));
+  sources = tableData;
   const totals = {
     source: 'Totaal',
     orders: sources.reduce((s,r)=>s+r.orders,0),
